@@ -72,7 +72,6 @@ where
 import Control.Monad (forM, replicateM)
 
 import Data.Char (toLower)
-import Data.Functor ((<$>))
 
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax (mkNameG, NameSpace(TcClsName))
@@ -142,8 +141,8 @@ makeCata :: CataOptions     -- Options to customize the catamorphism; the name o
 makeCata opts ty = do
     typeInfo <- reify ty
     (tyVarBndrs, cons) <- case typeInfo of
-            TyConI (DataD _ _ tyVarBndrs cons _)   -> return (tyVarBndrs, cons)
-            TyConI (NewtypeD _ _ tyVarBndrs con _) -> return (tyVarBndrs, [con])
+            TyConI (DataD _ _ tyVarBndrs _ cons _)   -> return (tyVarBndrs, cons)
+            TyConI (NewtypeD _ _ tyVarBndrs _ con _) -> return (tyVarBndrs, [con])
             _                                      -> fail "makeCata: Expected name of type constructor"
     sequence [signature tyVarBndrs cons, funDef cons]
   where
